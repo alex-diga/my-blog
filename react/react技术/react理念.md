@@ -1,0 +1,59 @@
+---
+title: React 理念
+date: 2022-06-09
+---
+
+## React 理念
+
+> React 是用 JavaScript 构建快速响应的大型 Web 应用程序的首选方式。它在 Facebook 和 Instagram 上表现优秀。
+
+制约快速响应的因素：
+
+- 当遇到大计算量的操作或者设备性能不足使页面掉帧，导致卡顿
+- 发送网络请求后，由于需要等待数据返回才能进一步操作导致不能快速响应
+
+瓶颈主要在 CPU 和 IO
+
+## React16 架构
+
+React16 架构可以分为三层：
+
+- Scheduler(调度器) 调度任务的优先级，高优任务优先进入 Reconciler
+- Reconciler(协调器) 负责找出变化的组件
+- Renderer(渲染器) 负责将变化的组件渲染到页面上
+
+### Scheduler
+
+浏览器是否有剩余时间作为任务中断的标准，当浏览器有剩余时间是通知开发
+浏览器已实现了这个 API 就是`requestIdleCallback`
+
+React 放弃使用`requestIdleCallback`:
+
+- 浏览器兼容性
+- 触发频率不稳定，受很多因素影响，比如当我们的浏览器切换 tab 后，之前 tab 注册的`requestIdleCallback`触发的频率会变得很低
+
+### Reconciler
+
+更新工作从递归变成了可以中断的循环过程
+
+Reconciler 与 renderer 不再是交替工作。当 Scheduler 将任务交给 Reconciler 后，Reconciler 会为变化的虚拟 DOM 打上代表增/删/更新的标记。整个 Scheduler 与 Reconciler 的工作都内存中进行，只有当所有组件都完成 Rencociler 的工作，才会统一交给 Renderer
+
+### Renderer
+
+Renderer 根据 Reconciler 为虚拟 DOM 打的标记，同步执行对应的 DOM 操作
+
+### 更新流程
+
+React16 架构中整个更新流程为：
+![React16架构中整个更新流程为](https://react.iamkasong.com/img/process.png)
+
+红框中的步骤随时可能由于以下原因被中断：
+
+- 有其他更高优任务需要先更新
+- 当前帧没有剩余时间
+
+由于红框中的工作都在内存中进行，不会更新页面上的DOM，所以即使反复中断，用户也不会看见更新不完全的DOM
+
+## 参考
+
+1. []()
